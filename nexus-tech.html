@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知行创赛社 · 山东管理学院</title>
+<meta name="description" content="山东管理学院知行创赛社 —— 聚焦创新创业与学科竞赛的先锋社团。知行合一，以赛促学。">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --bg:#04060e;
+    --bg-2:#070c1a;
+    --bg-3:#0b1226;
+    --line:rgba(110,150,230,.14);
+    --line-strong:rgba(110,150,230,.32);
+    --cyan:#22e0ff;
+    --blue:#4f6bff;
+    --violet:#8b6bff;
+    --magenta:#ff3d81;
+    --text:#eaf2ff;
+    --muted:#8fa3c7;
+    --mono:ui-monospace,"Cascadia Mono","JetBrains Mono",Consolas,Menlo,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    --pad-x:clamp(20px,6vw,120px);
+    --ease-spring:cubic-bezier(.2,.9,.25,1.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    overflow-x:hidden;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(34,224,255,.28)}
+
+  /* ============ BACKGROUND LAYERS ============ */
+  #net{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .grid-bg{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(rgba(80,120,220,.055) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(80,120,220,.055) 1px,transparent 1px);
+    background-size:56px 56px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 78%);
+            mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 78%);
+  }
+  .scanline{
+    position:fixed;left:0;right:0;height:2px;z-index:2;pointer-events:none;
+    top:-4px;
+    background:linear-gradient(90deg,transparent,rgba(34,224,255,.55),transparent);
+    box-shadow:0 0 18px rgba(34,224,255,.5);
+    animation:scan 9s linear infinite;
+  }
+  @keyframes scan{
+    0%{top:-4px;opacity:0}
+    6%{opacity:1}
+    94%{opacity:1}
+    100%{top:100vh;opacity:0}
+  }
+  .vignette{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse 120% 90% at 50% 10%,transparent 40%,rgba(2,3,8,.85) 100%);
+  }
+
+  /* ============ HUD CORNER DECOR ============ */
+  .hud-corner{position:fixed;width:26px;height:26px;z-index:5;pointer-events:none;opacity:.6}
+  .hud-corner.tl{top:16px;left:16px;border-top:1px solid var(--line-strong);border-left:1px solid var(--line-strong)}
+  .hud-corner.tr{top:16px;right:16px;border-top:1px solid var(--line-strong);border-right:1px solid var(--line-strong)}
+  .hud-corner.bl{bottom:16px;left:16px;border-bottom:1px solid var(--line-strong);border-left:1px solid var(--line-strong)}
+  .hud-corner.br{bottom:16px;right:16px;border-bottom:1px solid var(--line-strong);border-right:1px solid var(--line-strong)}
+
+  /* ============ NAV ============ */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px var(--pad-x);
+    transition:background .5s,backdrop-filter .5s,border-color .5s;
+    border-bottom:1px solid transparent;
+  }
+  nav.scrolled{
+    background:rgba(4,6,14,.72);
+    -webkit-backdrop-filter:blur(14px);
+            backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:var(--mono);font-size:19px;letter-spacing:2px;font-weight:700;
+    display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;
+  }
+  .logo .dot{
+    width:10px;height:10px;border-radius:2px;background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);transform:rotate(45deg);
+    animation:pulse 2.4s var(--ease-spring) infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .nav-links{display:flex;gap:clamp(18px,3vw,40px);align-items:center}
+  .nav-links a{
+    color:var(--muted);text-decoration:none;font-size:14px;letter-spacing:.5px;
+    position:relative;padding:4px 0;transition:color .3s;
+  }
+  .nav-links a::after{
+    content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+    background:linear-gradient(90deg,var(--cyan),var(--blue));
+    transition:width .45s var(--ease-spring);
+  }
+  .nav-links a:hover{color:var(--text)}
+  .nav-links a:hover::after{width:100%}
+  .nav-cta{
+    font-family:var(--mono);font-size:13px;letter-spacing:1px;
+    color:#04121a;background:var(--cyan);
+    padding:9px 18px;border-radius:6px;text-decoration:none;font-weight:700;
+    box-shadow:0 0 0 rgba(34,224,255,0);
+    transition:transform .35s var(--ease-spring),box-shadow .35s,background .3s;
+  }
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 0 26px rgba(34,224,255,.45);background:#5cebff}
+
+  /* ============ HERO ============ */
+  header.hero{
+    position:relative;z-index:10;
+    min-height:100svh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:120px var(--pad-x) 80px;
+  }
+  .hud-tag{
+    font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--cyan);
+    display:inline-flex;align-items:center;gap:10px;margin-bottom:26px;
+  }
+  .hud-tag::before{content:"";width:34px;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .hud-tag .blink{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 1.2s linear infinite}
+  .hero h1{
+    font-size:clamp(44px,9vw,118px);
+    line-height:1.02;letter-spacing:-.02em;font-weight:800;
+    max-width:12em;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(100deg,var(--cyan) 0%,var(--blue) 45%,var(--violet) 90%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero h1 .outline{
+    color:transparent;
+    -webkit-text-stroke:1.5px rgba(150,190,255,.5);
+  }
+  .hero .sub{
+    margin-top:26px;max-width:560px;color:var(--muted);font-size:clamp(15px,1.6vw,18px);
+  }
+  .hero .cta-row{display:flex;gap:16px;margin-top:44px;flex-wrap:wrap}
+  .btn{
+    font-family:var(--mono);font-size:14px;letter-spacing:1.5px;font-weight:700;
+    padding:16px 34px;border-radius:8px;text-decoration:none;
+    transition:transform .35s var(--ease-spring),box-shadow .35s,background .3s,border-color .3s;
+    position:relative;overflow:hidden;
+  }
+  .btn.primary{
+    color:#04121a;background:linear-gradient(100deg,var(--cyan),#7ce9ff);
+    box-shadow:0 0 0 rgba(34,224,255,0);
+  }
+  .btn.primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(34,224,255,.35)}
+  .btn.ghost{
+    color:var(--text);border:1px solid var(--line-strong);background:rgba(11,18,38,.5);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  }
+  .btn.ghost:hover{transform:translateY(-3px);border-color:var(--cyan);box-shadow:inset 0 0 24px rgba(34,224,255,.12)}
+
+  /* hero floating holographic ring (parallax) */
+  .holo{
+    position:absolute;pointer-events:none;will-change:transform;
+  }
+  .holo.ring{
+    right:6%;top:18%;
+    width:min(46vw,560px);aspect-ratio:1;
+    border-radius:50%;
+    border:1px solid rgba(34,224,255,.28);
+    box-shadow:
+      inset 0 0 60px rgba(34,224,255,.10),
+      0 0 60px rgba(79,107,255,.14);
+  }
+  .holo.ring::before{
+    content:"";position:absolute;inset:12%;
+    border-radius:50%;border:1px dashed rgba(139,107,255,.4);
+    animation:spin 40s linear infinite;
+  }
+  .holo.ring::after{
+    content:"";position:absolute;inset:26%;
+    border-radius:50%;
+    background:radial-gradient(circle at 38% 32%,rgba(34,224,255,.5),rgba(79,107,255,.18) 45%,transparent 70%);
+    filter:blur(2px);
+    animation:pulse 5s var(--ease-spring) infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .holo.axis{
+    right:calc(6% + min(23vw,280px));top:calc(18% + min(23vw,280px));
+    width:6px;height:6px;border-radius:50%;
+    background:var(--magenta);box-shadow:0 0 18px var(--magenta),0 0 46px rgba(255,61,129,.6);
+  }
+  .holo.code{
+    right:10%;bottom:22%;
+    font-family:var(--mono);font-size:11px;color:rgba(34,224,255,.55);letter-spacing:1px;
+    line-height:2;writing-mode:vertical-rl;text-align:left;
+  }
+  .scroll-hint{
+    position:absolute;left:50%;bottom:34px;transform:translateX(-50%);
+    font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .scroll-hint .mouse{
+    width:22px;height:36px;border:1px solid var(--line-strong);border-radius:12px;position:relative;
+  }
+  .scroll-hint .mouse::after{
+    content:"";position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;
+    background:var(--cyan);box-shadow:0 0 8px var(--cyan);
+    animation:wheel 1.8s var(--ease-spring) infinite;
+  }
+  @keyframes wheel{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
+
+  /* ============ SECTIONS ============ */
+  section{position:relative;z-index:10;padding:clamp(80px,12vh,150px) var(--pad-x)}
+  .sec-head{margin-bottom:clamp(40px,6vh,70px)}
+  .sec-index{
+    font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--cyan);
+    margin-bottom:14px;display:block;
+  }
+  .sec-head h2{font-size:clamp(30px,5vw,54px);letter-spacing:-.01em;font-weight:800;line-height:1.1}
+  .sec-head .line{width:64px;height:2px;margin-top:22px;background:linear-gradient(90deg,var(--cyan),transparent);box-shadow:0 0 12px rgba(34,224,255,.6)}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(36px);transition:opacity .9s var(--ease-spring),transform .9s var(--ease-spring)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  /* metrics */
+  .metrics{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:2px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  }
+  .metric{
+    background:linear-gradient(180deg,var(--bg-2),rgba(7,12,26,.4));
+    padding:34px 28px;position:relative;overflow:hidden;
+  }
+  .metric::after{
+    content:"";position:absolute;left:0;top:0;width:100%;height:1px;
+    background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .4s;
+  }
+  .metric:hover::after{opacity:1}
+  .metric .num{
+    font-family:var(--mono);font-size:clamp(30px,4vw,48px);font-weight:700;
+    background:linear-gradient(100deg,var(--cyan),var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .metric .lbl{margin-top:8px;color:var(--muted);font-size:13px;letter-spacing:1px}
+
+  /* features */
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+  .card{
+    position:relative;border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(180deg,rgba(11,18,38,.6),rgba(7,12,26,.35));
+    padding:34px 30px;overflow:hidden;
+    transition:transform .5s var(--ease-spring),border-color .4s,box-shadow .5s;
+    will-change:transform;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0;opacity:0;transition:opacity .5s;
+    background:
+      radial-gradient(420px 160px at var(--mx,50%) var(--my,-20%),rgba(34,224,255,.16),transparent 70%);
+  }
+  .card:hover{transform:translateY(-8px);border-color:rgba(34,224,255,.45);box-shadow:0 22px 60px rgba(5,10,30,.7),0 0 40px rgba(34,224,255,.12)}
+  .card:hover::before{opacity:1}
+  .card .icon{
+    width:52px;height:52px;border-radius:12px;margin-bottom:22px;
+    display:grid;place-items:center;font-size:24px;
+    background:rgba(34,224,255,.08);border:1px solid rgba(34,224,255,.25);
+    color:var(--cyan);box-shadow:0 0 22px rgba(34,224,255,.15) inset;
+  }
+  .card h3{font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:.2px}
+  .card p{color:var(--muted);font-size:14.5px}
+  .card .tag{
+    position:absolute;top:18px;right:20px;
+    font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);
+  }
+
+  /* architecture */
+  .arch{
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:linear-gradient(180deg,var(--bg-2),rgba(7,12,26,.3));position:relative;
+  }
+  .arch .top{
+    display:flex;align-items:center;gap:8px;padding:14px 20px;
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted);
+  }
+  .arch .top i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .arch .top i:nth-child(1){background:var(--magenta)}
+  .arch .top i:nth-child(2){background:#ffc24b}
+  .arch .top i:nth-child(3){background:var(--cyan)}
+  .arch .top span{margin-left:8px;letter-spacing:1px}
+  .arch .body{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:2px}
+  .node{padding:26px 22px;background:rgba(7,12,26,.35);position:relative;transition:background .4s}
+  .node:hover{background:rgba(34,224,255,.06)}
+  .node .n-title{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .node .n-title::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pulse 2s linear infinite}
+  .node p{font-size:13px;color:var(--muted)}
+  .node .load{height:3px;border-radius:2px;background:rgba(110,150,230,.14);margin-top:16px;overflow:hidden}
+  .node .load i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--violet));width:0;transition:width 1.6s var(--ease-spring)}
+  .node.on .load i{width:var(--w,70%)}
+
+  /* CTA */
+  .cta-panel{
+    border:1px solid var(--line-strong);border-radius:22px;position:relative;overflow:hidden;
+    padding:clamp(48px,8vw,90px) clamp(24px,6vw,90px);text-align:center;
+    background:
+      radial-gradient(600px 260px at 50% -10%,rgba(34,224,255,.14),transparent 70%),
+      linear-gradient(180deg,var(--bg-2),var(--bg));
+  }
+  .cta-panel::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(4,6,14,.35) 3px 4px);
+    opacity:.5;
+  }
+  .cta-panel h2{font-size:clamp(30px,5.4vw,60px);font-weight:800;line-height:1.08;letter-spacing:-.01em}
+  .cta-panel p{color:var(--muted);max-width:520px;margin:20px auto 0}
+  .cta-panel .cta-row{display:flex;gap:16px;justify-content:center;margin-top:40px;flex-wrap:wrap}
+
+  footer{
+    position:relative;z-index:10;padding:46px var(--pad-x) 60px;
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+    color:var(--muted);font-size:13px;
+  }
+  footer .f-mono{font-family:var(--mono);letter-spacing:2px;font-size:12px;color:var(--cyan)}
+
+  /* scroll progress */
+  #progress{
+    position:fixed;left:0;top:0;height:2px;width:0;z-index:60;
+    background:linear-gradient(90deg,var(--cyan),var(--violet),var(--magenta));
+    box-shadow:0 0 12px rgba(34,224,255,.6);
+  }
+
+  /* ============ QR MODAL ============ */
+  .qr-modal{
+    position:fixed;inset:0;z-index:100;display:none;
+    align-items:center;justify-content:center;padding:24px;
+    background:rgba(2,4,10,.78);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  }
+  .qr-modal.show{display:flex;animation:fadeIn .3s ease}
+  .qr-modal .box{
+    position:relative;max-width:min(94vw,900px);width:100%;
+    background:linear-gradient(180deg,var(--bg-2),var(--bg));
+    border:1px solid var(--line-strong);border-radius:18px;
+    padding:26px;text-align:center;
+    box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(34,224,255,.12);
+    animation:pop .4s var(--ease-spring);
+  }
+  .qr-modal .box::before{
+    content:"";position:absolute;inset:0;border-radius:18px;pointer-events:none;
+    background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(4,6,14,.3) 3px 4px);
+    opacity:.4;
+  }
+  .qr-modal h3{
+    font-family:var(--mono);font-size:14px;letter-spacing:3px;color:var(--cyan);
+    margin-bottom:6px;position:relative;
+  }
+  .qr-modal .tip{color:var(--muted);font-size:13px;margin-bottom:20px;position:relative}
+  .qr-modal img{
+    width:100%;max-width:300px;border-radius:10px;display:block;margin:0 auto;
+    border:1px solid var(--line);position:relative;
+    box-shadow:0 0 30px rgba(34,224,255,.15);
+  }
+  .qr-modal .close{
+    position:absolute;top:12px;right:14px;z-index:2;
+    width:34px;height:34px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--line-strong);color:var(--muted);
+    background:rgba(11,18,38,.6);font-size:16px;line-height:1;
+    display:grid;place-items:center;transition:all .3s;
+  }
+  .qr-modal .close:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px rgba(34,224,255,.3)}
+  .qr-modal .qr-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+    position:relative;margin-top:8px;
+  }
+  .qr-modal .qr-grid .g-item{
+    aspect-ratio:3/4;border:1px solid var(--line);border-radius:10px;overflow:hidden;
+    cursor:zoom-in;position:relative;background:var(--bg-3);
+    transition:border-color .3s,box-shadow .3s,transform .3s;
+  }
+  .qr-modal .qr-grid .g-item:hover{border-color:var(--cyan);box-shadow:0 0 18px rgba(34,224,255,.25);transform:translateY(-3px)}
+  .qr-modal .qr-grid .g-item img{width:100%;height:100%;object-fit:contain;display:block;padding:6px;transition:transform .4s var(--ease-spring)}
+  .qr-modal .qr-grid .g-item:hover img{transform:scale(1.03)}
+  @media (max-width:640px){
+    .qr-modal .qr-grid{grid-template-columns:1fr;gap:14px}
+    .qr-modal .qr-grid .g-item{aspect-ratio:4/5}
+  }
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes pop{from{transform:scale(.9) translateY(16px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes flipIn{
+    0%{opacity:0;transform:perspective(1400px) rotateY(62deg) rotateX(7deg) translateZ(-130px) scale(.86)}
+    55%{opacity:1}
+    100%{opacity:1;transform:perspective(1400px) rotateX(0) rotateY(0) translateZ(0) scale(1)}
+  }
+
+  /* ============ AWARDS GALLERY ============ */
+  .award-trigger{cursor:pointer}
+  .award-trigger .award-hint{
+    margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:1px;
+    color:var(--cyan);opacity:.75;transition:opacity .3s;
+  }
+  .award-trigger:hover .award-hint{opacity:1}
+  .award-modal{
+    position:fixed;inset:0;z-index:110;display:none;
+    align-items:center;justify-content:center;padding:24px;
+    background:rgba(2,4,10,.82);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  }
+  .award-modal.show{display:flex;animation:fadeIn .3s ease}
+  .award-modal .g-box{
+    position:relative;width:100%;max-width:min(96vw,1320px);
+    max-height:92vh;overflow-y:auto;overflow-x:hidden;
+    background:linear-gradient(180deg,var(--bg-2),var(--bg));
+    border:1px solid var(--line-strong);border-radius:18px;
+    padding:26px;animation:pop .4s var(--ease-spring);
+    scrollbar-width:thin;scrollbar-color:rgba(34,224,255,.4) transparent;
+  }
+  .award-modal .g-head{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;
+  }
+  .award-modal h3{
+    font-family:var(--mono);font-size:14px;letter-spacing:3px;color:var(--cyan);
+  }
+  .award-modal .g-count{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:1px}
+  .award-modal .award3d{
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    padding:6px 0 2px;
+  }
+  .award-modal .award3d-stage{
+    perspective:1600px;
+    width:100%;min-height:440px;
+    display:grid;place-items:center;
+  }
+  .award-modal .award3d-ring{
+    --r:400px;--cw:255px;--ch:335px;
+    position:relative;width:var(--cw);height:var(--ch);
+    transform-style:preserve-3d;
+    animation:ringSpin 28s linear infinite;
+  }
+  .award-modal .award3d:hover .award3d-ring{animation-play-state:paused}
+  .award-modal .award3d-card{
+    position:absolute;inset:0;margin:auto;width:var(--cw);height:var(--ch);
+    border:1px solid var(--line-strong);border-radius:10px;overflow:hidden;cursor:zoom-in;
+    background:var(--bg-3);backface-visibility:hidden;
+    transform:rotateY(var(--a)) translateZ(var(--r));
+    box-shadow:0 12px 34px rgba(0,0,0,.5);
+    transition:transform .4s var(--ease-spring),border-color .3s,box-shadow .3s;
+  }
+  .award-modal .award3d-card:hover{
+    transform:rotateY(var(--a)) translateZ(calc(var(--r) + 130px)) scale(1.28);
+    border-color:var(--cyan);
+    box-shadow:0 0 36px rgba(34,224,255,.35),0 18px 40px rgba(0,0,0,.6);
+  }
+  .award-modal .award3d-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+  .award-modal .award3d-hint{
+    font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--muted);text-align:center;
+  }
+  @keyframes ringSpin{from{transform:rotateX(-10deg) rotateY(0deg)}to{transform:rotateX(-10deg) rotateY(360deg)}}
+  @media (max-width:640px){
+    .award-modal .award3d-ring{--r:190px;--cw:112px;--ch:150px}
+    .award-modal .award3d-stage{min-height:280px}
+  }
+  .award-modal .g-close{
+    width:34px;height:34px;border-radius:8px;cursor:pointer;flex:none;
+    border:1px solid var(--line-strong);color:var(--muted);
+    background:rgba(11,18,38,.6);font-size:16px;line-height:1;
+    display:grid;place-items:center;transition:all .3s;
+  }
+  .award-modal .g-close:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px rgba(34,224,255,.3)}
+
+  /* lightbox */
+  .award-lb{
+    position:fixed;inset:0;z-index:130;display:none;
+    align-items:center;justify-content:center;padding:30px;
+    background:rgba(2,4,10,.92);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  }
+  .award-lb.show{display:flex;animation:fadeIn .25s ease}
+  .award-lb img{
+    max-width:92vw;max-height:88vh;object-fit:contain;
+    border:1px solid var(--line-strong);border-radius:8px;
+    box-shadow:0 20px 70px rgba(0,0,0,.7);
+    transform:perspective(1400px) rotateX(var(--lrx,0deg)) rotateY(var(--lry,0deg));
+    will-change:transform;
+    transition:transform .18s ease-out;
+  }
+  .award-lb.show img{animation:flipIn .5s var(--ease-spring) both}
+  .award-lb img.lb-tilt{animation:none}
+  .award-lb .lb-close{
+    position:absolute;top:18px;right:22px;z-index:2;
+    width:38px;height:38px;border-radius:9px;cursor:pointer;
+    border:1px solid var(--line-strong);color:var(--muted);
+    background:rgba(11,18,38,.7);font-size:17px;line-height:1;
+    display:grid;place-items:center;transition:all .3s;
+  }
+  .award-lb .lb-close:hover{color:var(--cyan);border-color:var(--cyan)}
+
+  /* ============ CURSOR FX ============ */
+  .cursor-dot,.cursor-ring,.cursor-glow{
+    position:fixed;left:0;top:0;pointer-events:none;z-index:200;
+    will-change:transform;opacity:0;
+  }
+  body.cursor-on .cursor-dot,body.cursor-on .cursor-ring,body.cursor-on .cursor-glow{opacity:1}
+  .cursor-dot{
+    width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;
+    background:var(--cyan);box-shadow:0 0 10px var(--cyan);
+  }
+  .cursor-ring{
+    width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;
+    border:1.5px solid rgba(34,224,255,.65);
+    box-shadow:0 0 20px rgba(34,224,255,.3),inset 0 0 12px rgba(34,224,255,.15);
+    transition:width .28s var(--ease-spring),height .28s var(--ease-spring),margin .28s var(--ease-spring),
+               border-color .28s,box-shadow .28s;
+  }
+  .cursor-ring.hot{
+    width:60px;height:60px;margin:-30px 0 0 -30px;
+    border-color:var(--violet);
+    box-shadow:0 0 30px rgba(139,107,255,.5),inset 0 0 18px rgba(139,107,255,.22);
+  }
+  .cursor-glow{
+    width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;
+    background:radial-gradient(circle,rgba(34,224,255,.12),rgba(34,224,255,.045) 42%,transparent 70%);
+    mix-blend-mode:screen;
+  }
+  @media (pointer:coarse){
+    .cursor-dot,.cursor-ring,.cursor-glow{display:none!important}
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    html{scroll-behavior:auto}
+    .rv{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="net"></canvas>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+<div class="cursor-glow"></div>
+<div class="grid-bg"></div>
+<div class="vignette"></div>
+<div class="scanline"></div>
+<div id="progress"></div>
+<div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div><div class="hud-corner br"></div>
+
+<!-- ============ NAV ============ -->
+<nav id="nav">
+  <a class="logo" href="#top"><span class="dot"></span>知行创赛社</a>
+  <div class="nav-links">
+    <a href="#metrics">荣誉</a>
+    <a href="#features">培养</a>
+    <a href="#arch">方向</a>
+    <a href="#cta" class="nav-cta">加入我们</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="holo ring" data-depth="18"></div>
+  <div class="holo axis" data-depth="38"></div>
+  <div class="holo code" data-depth="26">SDMU · 知行创赛社 · ONLINE</div>
+
+  <span class="hud-tag"><span class="blink"></span>WELCOME TO SHANDONG MANAGEMENT UNIVERSITY</span>
+  <h1>
+    <span class="outline">欢迎来到</span><br>
+    <span class="grad">山东管理学院</span><br>
+    知行创赛社
+  </h1>
+  <p class="sub">
+    知行创赛社是山东管理学院聚焦创新创业与学科竞赛的先锋社团。
+    以「知行合一 · 以赛促学」为理念，汇聚跨学科战队，征战互联网+、挑战杯等顶级赛事。
+  </p>
+  <div class="cta-row">
+    <a class="btn primary" href="#cta">加入我们</a>
+    <a class="btn ghost" href="#features">了解社团</a>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="mouse"></div>
+    SCROLL
+  </div>
+</header>
+
+<!-- ============ METRICS ============ -->
+<section id="metrics">
+  <div class="sec-head rv">
+    <span class="sec-index">[ 01 · 社团概览 ]</span>
+    <h2>数字会说话</h2>
+    <div class="line"></div>
+  </div>
+  <div class="metrics rv d1">
+    <div class="metric award-trigger" id="awardTrigger">
+      <div class="num" data-count="60" data-suffix="+">0</div>
+      <div class="lbl">累计获奖（国家级 · 省级）</div>
+      <div class="award-hint">点击查看获奖证书 ▸</div>
+    </div>
+    <div class="metric">
+      <div class="num" data-count="30" data-suffix="+">0</div>
+      <div class="lbl">覆盖竞赛类别</div>
+    </div>
+    <div class="metric">
+      <div class="num" data-count="500" data-suffix="+">0</div>
+      <div class="lbl">在社活跃成员</div>
+    </div>
+    <div class="metric">
+      <div class="num" data-count="2024">0</div>
+      <div class="lbl">社团成立年份</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section id="features">
+  <div class="sec-head rv">
+    <span class="sec-index">[ 02 · 特色培养 ]</span>
+    <h2>以赛促学 · 全面成长</h2>
+    <div class="line"></div>
+  </div>
+  <div class="features">
+    <div class="card rv d1">
+      <span class="tag">TRACK-01</span>
+      <div class="icon">◈</div>
+      <h3>竞赛孵化器</h3>
+      <p>从选题、组队、备赛到路演答辩全流程陪跑，让每一个好想法真正落地成赛果。</p>
+    </div>
+    <div class="card rv d2">
+      <span class="tag">TRACK-02</span>
+      <div class="icon">◉</div>
+      <h3>导师双轨制</h3>
+      <p>校内外专业导师 + 优秀学长导师双轨护航，一对一打磨项目，拒绝孤军奋战。</p>
+    </div>
+    <div class="card rv d3">
+      <span class="tag">TRACK-03</span>
+      <div class="icon">⌬</div>
+      <h3>实战路演场</h3>
+      <p>定期模拟答辩、跨组互评、评委点评，在真实赛场上也能游刃有余。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARCH ============ -->
+<section id="arch">
+  <div class="sec-head rv">
+    <span class="sec-index">[ 03 · 竞赛方向 ]</span>
+    <h2>四大方向 · 全面开花</h2>
+    <div class="line"></div>
+  </div>
+  <div class="arch rv d1">
+    <div class="top"><i></i><i></i><i></i><span>ZHI-XING · COMPETITION MATRIX</span></div>
+    <div class="body">
+      <div class="node on">
+        <div class="n-title">创新创业</div>
+        <p>互联网+ · 大创 · 创青春 等双创赛事。</p>
+        <div class="load"><i style="--w:88%"></i></div>
+      </div>
+      <div class="node on">
+        <div class="n-title">挑战杯</div>
+        <p>课外学术科技作品与创业计划竞赛。</p>
+        <div class="load"><i style="--w:72%"></i></div>
+      </div>
+      <div class="node on">
+        <div class="n-title">学科竞赛</div>
+        <p>数学建模 · 电子设计 · 程序设计等。</p>
+        <div class="load"><i style="--w:81%"></i></div>
+      </div>
+      <div class="node on">
+        <div class="n-title">技能实战</div>
+        <p>路演 · 答辩 · 商业计划书写作训练。</p>
+        <div class="load"><i style="--w:65%"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section id="cta">
+  <div class="cta-panel rv">
+    <span class="sec-index">[ 04 · 纳新加入 ]</span>
+    <h2>新赛季<br>等你来战</h2>
+    <p>无论你是创意天马行空，还是技术功底扎实，知行创赛社都为你留好了席位。加入我们，一起把想法变成奖杯。</p>
+    <div class="cta-row">
+      <a class="btn primary" href="javascript:void(0)" id="joinGroupBtn">加入纳新群</a>
+      <a class="btn primary" href="loveletter://open" id="welcomeBtn">欢迎加入我们</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><span class="f-mono">知行创赛社®</span> · 山东管理学院</div>
+  <div>知行合一 · 以赛促学 · © 2026 知行创赛社</div>
+</footer>
+
+<!-- ============ QR MODAL ============ -->
+<div class="qr-modal" id="qrModal">
+  <div class="box">
+    <button class="close" id="qrClose" aria-label="关闭">✕</button>
+    <h3>JOIN US</h3>
+    <div class="tip">扫码加入纳新群</div>
+    <div class="qr-grid">
+      <div class="g-item" data-src="join/join-1.png"><img src="join/join-1.png" alt="纳新群二维码1"></div>
+      <div class="g-item" data-src="join/join-2.png"><img src="join/join-2.png" alt="纳新群二维码2"></div>
+      <div class="g-item" data-src="join/join-3.png"><img src="join/join-3.png" alt="纳新群二维码3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AWARDS GALLERY ============ -->
+<div class="award-modal" id="awardModal">
+  <div class="g-box">
+    <div class="g-head">
+      <h3>获奖证书 · 荣誉墙</h3>
+      <button class="g-close" id="awardClose" aria-label="关闭">✕</button>
+    </div>
+    <div class="award3d">
+      <div class="award3d-stage">
+        <div class="award3d-ring">
+          <div class="award3d-card" data-src="awards/award-01.png" style="--a:0deg"><img src="awards/award-01.png" alt="获奖证书1" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-02.png" style="--a:36deg"><img src="awards/award-02.png" alt="获奖证书2" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-03.png" style="--a:72deg"><img src="awards/award-03.png" alt="获奖证书3" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-04.png" style="--a:108deg"><img src="awards/award-04.png" alt="获奖证书4" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-05.png" style="--a:144deg"><img src="awards/award-05.png" alt="获奖证书5" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-06.png" style="--a:180deg"><img src="awards/award-06.png" alt="获奖证书6" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-07.png" style="--a:216deg"><img src="awards/award-07.png" alt="获奖证书7" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-08.png" style="--a:252deg"><img src="awards/award-08.png" alt="获奖证书8" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-09.png" style="--a:288deg"><img src="awards/award-09.png" alt="获奖证书9" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-10.png" style="--a:324deg"><img src="awards/award-10.png" alt="获奖证书10" loading="lazy"></div>
+        </div>
+      </div>
+      <div class="award3d-hint">悬停放大 · 点击查看大图</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ AWARDS LIGHTBOX ============ -->
+<div class="award-lb" id="awardLb">
+  <button class="lb-close" id="lbClose" aria-label="关闭">✕</button>
+  <img id="lbImg" src="" alt="获奖证书大图">
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============ PARTICLE NETWORK ============ */
+  const canvas = document.getElementById('net');
+  const ctx = canvas.getContext('2d');
+  let W, H, DPR = Math.min(window.devicePixelRatio || 1, 2);
+  let particles = [];
+  const mouse = {x:-9999, y:-9999, tx:-9999, ty:-9999};
+  const LINK_DIST = 150;
+  const LINK_DIST2 = LINK_DIST * LINK_DIST;
+  const MOUSE_R = 180;
+
+  function resize(){
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const count = reduceMotion ? 30 : Math.min(120, Math.floor(W * H / 16000));
+    particles = [];
+    for (let i = 0; i < count; i++){
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - .5) * .35,
+        vy: (Math.random() - .5) * .35,
+        r: Math.random() * 1.6 + .5
+      });
+    }
+  }
+
+  // pointer parallax smoothing
+  const smooth = {x:0, y:0};
+  window.addEventListener('pointermove', e => {
+    mouse.tx = e.clientX;
+    mouse.ty = e.clientY;
+  }, {passive:true});
+  window.addEventListener('pointerleave', () => { mouse.tx = mouse.ty = -9999; });
+
+  function drawNet(){
+    ctx.clearRect(0, 0, W, H);
+    // smooth mouse
+    const k = 0.06;
+    smooth.x += (mouse.tx - smooth.x) * k;
+    smooth.y += (mouse.ty - smooth.y) * k;
+    mouse.x = smooth.x; mouse.y = smooth.y;
+
+    // drift
+    for (const p of particles){
+      // mouse repulsion
+      const dx = p.x - mouse.x, dy = p.y - mouse.y;
+      const d2 = dx*dx + dy*dy;
+      if (d2 < MOUSE_R * MOUSE_R && d2 > 0.01){
+        const d = Math.sqrt(d2);
+        const f = (MOUSE_R - d) / MOUSE_R * 0.9;
+        p.vx += (dx / d) * f;
+        p.vy += (dy / d) * f;
+      }
+      p.vx *= 0.985; p.vy *= 0.985;
+      p.x += p.vx; p.y += p.vy;
+      // wrap
+      if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
+      if (p.y < -20) p.y = H + 20; else if (p.y > H + 20) p.y = -20;
+    }
+
+    // links
+    for (let i = 0; i < particles.length; i++){
+      const a = particles[i];
+      for (let j = i + 1; j < particles.length; j++){
+        const b = particles[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const d2 = dx*dx + dy*dy;
+        if (d2 < LINK_DIST2){
+          const t = 1 - Math.sqrt(d2) / LINK_DIST;
+          ctx.strokeStyle = 'rgba(90,140,255,' + (t * 0.34) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+      // link to mouse
+      const d2m = (a.x - mouse.x)**2 + (a.y - mouse.y)**2;
+      if (d2m < LINK_DIST2 && mouse.x > -100){
+        const t = 1 - Math.sqrt(d2m) / LINK_DIST;
+        ctx.strokeStyle = 'rgba(34,224,255,' + (t * 0.5) + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.stroke();
+      }
+    }
+
+    // nodes
+    for (const p of particles){
+      ctx.fillStyle = 'rgba(160,200,255,.75)';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  /* ============ HERO PARALLAX (spring-damped, rate-scaled) ============ */
+  const layers = Array.from(document.querySelectorAll('.holo'));
+  layers.forEach(el => {
+    el._depth = parseFloat(el.dataset.depth) || 20;
+    el._x = 0; el._y = 0;
+  });
+  function parallax(){
+    const cx = (mouse.x - W / 2);
+    const cy = (mouse.y - H / 2);
+    for (const el of layers){
+      // 1 - exp(-k*dt) frame-rate independent smoothing
+      const k = 0.045;
+      const rate = el._depth / 100;
+      el._x += (cx * rate - el._x) * (1 - Math.exp(-k));
+      el._y += (cy * rate - el._y) * (1 - Math.exp(-k));
+      el.style.transform = 'translate3d(' + el._x + 'px,' + el._y + 'px,0)';
+    }
+  }
+
+  /* ============ LOOP ============ */
+  let ticking = false;
+  function frame(){
+    drawNet();
+    parallax();
+    cursorFX();
+    requestAnimationFrame(frame);
+  }
+
+  /* ============ REVEAL ON SCROLL ============ */
+  const io = new IntersectionObserver((entries) => {
+    for (const en of entries){
+      if (en.isIntersecting){
+        en.target.classList.add('in');
+        // trigger node loads + counters
+        if (en.target.classList.contains('arch')){
+          setTimeout(() => document.querySelectorAll('.node').forEach(n => n.classList.add('on')), 60);
+        }
+        if (en.target.classList.contains('metrics')){
+          runCounters(en.target);
+        }
+        io.unobserve(en.target);
+      }
+    }
+  }, {threshold: 0.18});
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  /* ============ COUNTERS ============ */
+  function runCounters(scope){
+    const els = scope.querySelectorAll('[data-count]');
+    els.forEach(el => {
+      const target = parseFloat(el.dataset.count);
+      const dec = parseInt(el.dataset.dec || '0', 10);
+      const suffix = el.dataset.suffix || '';
+      const dur = 1600, start = performance.now();
+      function tick(now){
+        const t = Math.min(1, (now - start) / dur);
+        const ease = 1 - Math.pow(1 - t, 3);
+        const val = target * ease;
+        el.textContent = (dec ? val.toFixed(dec) : Math.round(val).toString()) + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = (dec ? target.toFixed(dec) : Math.round(target).toString()) + suffix;
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* ============ NAV SCROLL STATE ============ */
+  const nav = document.getElementById('nav');
+  const progress = document.getElementById('progress');
+  function onScroll(){
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 40);
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (y / h * 100) : 0) + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+
+  /* ============ QR MODAL ============ */
+  const qrModal = document.getElementById('qrModal');
+  const joinBtn = document.getElementById('joinGroupBtn');
+  function openQr(e){
+    e.preventDefault();
+    qrModal.classList.add('show');
+  }
+  function closeQr(){
+    qrModal.classList.remove('show');
+  }
+  if (joinBtn) joinBtn.addEventListener('click', openQr);
+  if (qrModal){
+    qrModal.addEventListener('click', e => {
+      if (e.target === qrModal || e.target.id === 'qrClose') closeQr();
+    });
+    qrModal.querySelectorAll('.g-item').forEach(it => {
+      it.addEventListener('click', () => {
+        const lb = document.getElementById('awardLb');
+        const img = document.getElementById('lbImg');
+        if (lb && img){ img.src = it.dataset.src; lb.classList.add('show'); }
+      });
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeQr(); });
+  }
+
+  /* ============ AWARDS GALLERY ============ */
+  const awardTrigger = document.getElementById('awardTrigger');
+  const awardModal = document.getElementById('awardModal');
+  const awardLb = document.getElementById('awardLb');
+  const lbImg = document.getElementById('lbImg');
+  function openAwards(){
+    awardModal.classList.add('show');
+  }
+  function closeAwards(){
+    awardModal.classList.remove('show');
+    awardLb.classList.remove('show');
+    if (lbImg){
+      lbImg.classList.remove('lb-tilt');
+      lbImg.style.setProperty('--lrx','0deg');
+      lbImg.style.setProperty('--lry','0deg');
+    }
+  }
+  if (awardTrigger) awardTrigger.addEventListener('click', openAwards);
+  if (awardModal){
+    awardModal.addEventListener('click', e => {
+      if (e.target === awardModal || e.target.id === 'awardClose') closeAwards();
+    });
+    const items = awardModal.querySelectorAll('.award3d-card');
+    items.forEach(it => {
+      it.addEventListener('click', () => {
+        lbImg.src = it.dataset.src;
+        awardLb.classList.add('show');
+      });
+    });
+  }
+  if (awardLb){
+    awardLb.addEventListener('click', e => {
+      if (e.target === awardLb || e.target.id === 'lbClose'){
+        awardLb.classList.remove('show');
+        resetLbTilt();
+      }
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape'){
+      if (awardLb && awardLb.classList.contains('show')){
+        awardLb.classList.remove('show');
+        if (lbImg){
+          lbImg.classList.remove('lb-tilt');
+          lbImg.style.setProperty('--lrx','0deg');
+          lbImg.style.setProperty('--lry','0deg');
+        }
+      }
+      else if (awardModal && awardModal.classList.contains('show')) closeAwards();
+      else if (qrModal && qrModal.classList.contains('show')) closeQr();
+    }
+  });
+
+  /* ============ AWARD 3D TILT ============ */
+  function resetLbTilt(){
+    if (lbImg){
+      lbImg.classList.remove('lb-tilt');
+      lbImg.style.setProperty('--lrx','0deg');
+      lbImg.style.setProperty('--lry','0deg');
+    }
+  }
+  if (!reduceMotion && awardModal && awardLb && lbImg){
+    awardLb.addEventListener('animationend', e => {
+      if (e.target === lbImg) lbImg.classList.add('lb-tilt');
+    }, {passive:true});
+    awardLb.addEventListener('pointermove', e => {
+      if (!awardLb.classList.contains('show') || !lbImg.classList.contains('lb-tilt')) return;
+      const r = awardLb.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      lbImg.style.setProperty('--lry', ((px - .5) * 10).toFixed(2) + 'deg');
+      lbImg.style.setProperty('--lrx', ((.5 - py) * 6).toFixed(2) + 'deg');
+    }, {passive:true});
+    awardLb.addEventListener('pointerleave', () => {
+      lbImg.style.setProperty('--lrx','0deg');
+      lbImg.style.setProperty('--lry','0deg');
+    }, {passive:true});
+  }
+
+  /* ============ CURSOR FX ============ */
+  const coarsePointer = window.matchMedia('(pointer:coarse)').matches;
+  const cDot = document.querySelector('.cursor-dot');
+  const cRing = document.querySelector('.cursor-ring');
+  const cGlow = document.querySelector('.cursor-glow');
+  const HOT_SEL = 'a,button,.card,.metric,.arch,.node,.g-item,.award-trigger,.close,.logo,.nav-cta';
+  let gx = -9999, gy = -9999, rrx = -9999, rry = -9999, ggx = -9999, ggy = -9999;
+  if (!reduceMotion && !coarsePointer && cRing && cGlow && cDot){
+    document.body.classList.add('cursor-on');
+    window.addEventListener('pointermove', e => { gx = e.clientX; gy = e.clientY; }, {passive:true});
+    window.addEventListener('pointerleave', () => { gx = gy = -9999; });
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest && e.target.closest(HOT_SEL)) cRing.classList.add('hot');
+    });
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest && e.target.closest(HOT_SEL)) cRing.classList.remove('hot');
+    });
+    // card spotlight follows cursor
+    document.querySelectorAll('.card').forEach(c => {
+      c.addEventListener('pointermove', e => {
+        const r = c.getBoundingClientRect();
+        c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      });
+    });
+  }
+  function cursorFX(){
+    if (coarsePointer || !cRing) return;
+    // frame-rate independent exponential smoothing
+    rrx += (gx - rrx) * (1 - Math.exp(-0.22));
+    rry += (gy - rry) * (1 - Math.exp(-0.22));
+    ggx += (gx - ggx) * (1 - Math.exp(-0.07));
+    ggy += (gy - ggy) * (1 - Math.exp(-0.07));
+    cDot.style.transform = 'translate3d(' + gx + 'px,' + gy + 'px,0)';
+    cRing.style.transform = 'translate3d(' + rrx + 'px,' + rry + 'px,0)';
+    cGlow.style.transform = 'translate3d(' + ggx + 'px,' + ggy + 'px,0)';
+  }
+
+  /* ============ INIT ============ */
+  resize();
+  window.addEventListener('resize', resize);
+  onScroll();
+  if (reduceMotion){
+    // static final state
+    document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+    document.querySelectorAll('.node').forEach(n => n.classList.add('on'));
+    document.querySelectorAll('[data-count]').forEach(el => {
+      el.textContent = (el.dataset.dec ? parseFloat(el.dataset.count).toFixed(el.dataset.dec) : el.dataset.count) + (el.dataset.suffix || '');
+    });
+  } else {
+    requestAnimationFrame(frame);
+  }
+})();
+</script>
+</body>
+</html>
