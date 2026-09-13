@@ -329,6 +329,23 @@
   }
   footer .f-mono{font-family:var(--mono);letter-spacing:2px;font-size:12px;color:var(--cyan)}
 
+  .footer-poster{
+    position:relative;z-index:10;
+    max-width:420px;margin:0 auto;padding:34px var(--pad-x) 6px;
+    perspective:900px;
+  }
+  .footer-poster img{
+    display:block;width:100%;height:auto;
+    transform-style:preserve-3d;
+    transform:rotateX(0deg) rotateY(0deg) scale(1);
+    transition:transform .12s ease-out,filter .3s ease;
+    filter:drop-shadow(0 0 26px rgba(34,224,255,.18));
+    will-change:transform;
+    cursor:pointer;
+  }
+  .footer-poster img.tilt{transition:transform .06s linear}
+  .footer-poster img:hover{filter:drop-shadow(0 0 36px rgba(34,224,255,.4))}
+
   /* scroll progress */
   #progress{
     position:fixed;left:0;top:0;height:2px;width:0;z-index:60;
@@ -699,6 +716,10 @@
 </section>
 
 
+
+<div class="footer-poster" id="posterWrap">
+  <img src="i_want_you_for_zxcs_poster.svg" alt="I Want You — 知行创赛社纳新" id="posterImg" draggable="false">
+</div>
 
 <footer>
   <div><span class="f-mono">知行创赛社®</span> · 山东管理学院</div>
@@ -1118,6 +1139,29 @@
   document.addEventListener('pointerdown', function onFirstClick() {
     if (!boomPlayed) playBoom();
   });
+})();
+</script>
+<script>
+(function () {
+  var wrap = document.getElementById('posterWrap');
+  if (!wrap) return;
+  if (window.matchMedia && window.matchMedia('(pointer:coarse)').matches) return;
+  var img = document.getElementById('posterImg');
+  var MAX = 20; // 强倾斜最大角度
+  function onMove(e) {
+    var r = wrap.getBoundingClientRect();
+    if (r.width === 0) return;
+    var px = (e.clientX - r.left) / r.width - 0.5; // -0.5..0.5
+    var py = (e.clientY - r.top) / r.height - 0.5;
+    img.classList.add('tilt');
+    img.style.transform = 'rotateX(' + (-py * MAX * 2).toFixed(2) + 'deg) rotateY(' + (px * MAX * 2).toFixed(2) + 'deg) scale(1.07)';
+  }
+  function onLeave() {
+    img.classList.remove('tilt');
+    img.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+  }
+  wrap.addEventListener('mousemove', onMove);
+  wrap.addEventListener('mouseleave', onLeave);
 })();
 </script>
 </body>
