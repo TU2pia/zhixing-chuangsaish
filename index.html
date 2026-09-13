@@ -1103,7 +1103,7 @@
     if (boomPlayed) return;
     try {
       var a = new Audio('boom.mp3');
-      a.volume = 0.7;
+      a.volume = 1.0;
       var p = a.play();
       if (p && p.then) {
         p.then(function () { boomPlayed = true; }).catch(function () {});
