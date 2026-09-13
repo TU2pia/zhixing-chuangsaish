@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>活动风采 · 知行创赛社</title>
+<meta name="description" content="知行创赛社 · 山东管理学院 —— 活动风采与精彩瞬间 3D 相册。知行合一，以赛促学。">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --bg:#04060e;
+    --bg-2:#070c1a;
+    --bg-3:#0b1226;
+    --line:rgba(110,150,230,.14);
+    --line-strong:rgba(110,150,230,.32);
+    --cyan:#22e0ff;
+    --blue:#4f6bff;
+    --violet:#8b6bff;
+    --magenta:#ff3d81;
+    --text:#eaf2ff;
+    --muted:#8fa3c7;
+    --mono:ui-monospace,"Cascadia Mono","JetBrains Mono",Consolas,Menlo,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    --pad-x:clamp(20px,6vw,120px);
+    --ease-spring:cubic-bezier(.2,.9,.25,1.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    overflow-x:hidden;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;
+  }
+  ::selection{background:rgba(34,224,255,.28)}
+
+  /* ============ BACKGROUND LAYERS ============ */
+  .grid-bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      linear-gradient(rgba(80,120,220,.055) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(80,120,220,.055) 1px,transparent 1px);
+    background-size:56px 56px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 78%);
+            mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 78%);
+  }
+  .glow{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(60% 50% at 50% 0%,rgba(79,107,255,.16),transparent 70%),
+      radial-gradient(50% 40% at 85% 100%,rgba(139,107,255,.10),transparent 70%);
+  }
+  .scanline{
+    position:fixed;left:0;right:0;height:2px;z-index:2;pointer-events:none;
+    top:-4px;background:linear-gradient(90deg,transparent,rgba(34,224,255,.55),transparent);
+    box-shadow:0 0 18px rgba(34,224,255,.5);
+    animation:scan 9s linear infinite;
+  }
+  @keyframes scan{0%{top:-4px;opacity:0}6%{opacity:1}94%{opacity:1}100%{top:100vh;opacity:0}}
+
+  /* ============ TOPBAR ============ */
+  .topbar{
+    position:relative;z-index:10;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px var(--pad-x);
+    border-bottom:1px solid var(--line);
+    background:rgba(4,6,14,.55);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  }
+  .logo{
+    font-family:var(--mono);font-size:19px;letter-spacing:2px;font-weight:700;
+    display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;
+  }
+  .logo .dot{
+    width:10px;height:10px;border-radius:2px;background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);transform:rotate(45deg);
+    animation:pulse 2.4s var(--ease-spring) infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  /* ============ BUTTONS ============ */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:11px 24px;border-radius:8px;font-size:14px;letter-spacing:1px;
+    text-decoration:none;font-family:var(--mono);cursor:pointer;
+    border:1px solid var(--line-strong);color:var(--muted);
+    background:rgba(11,18,38,.4);
+    transition:all .35s var(--ease-spring);
+  }
+  .btn:hover{
+    transform:translateY(-3px);border-color:var(--cyan);color:var(--cyan);
+    box-shadow:inset 0 0 24px rgba(34,224,255,.12),0 0 20px rgba(34,224,255,.25);
+  }
+
+  /* ============ STAGE ============ */
+  .stage{
+    position:relative;z-index:3;flex:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:clamp(44px,8vh,90px) var(--pad-x);
+    text-align:center;
+  }
+  .sec-index{font-family:var(--mono);font-size:13px;letter-spacing:4px;color:var(--cyan)}
+  .stage h1{font-size:clamp(30px,5vw,54px);letter-spacing:-.01em;font-weight:800;line-height:1.1;margin:14px 0 8px}
+  .sub{color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:2px;margin-bottom:clamp(24px,4vh,40px)}
+  .line{width:64px;height:2px;margin:22px auto 0;background:linear-gradient(90deg,var(--cyan),transparent);}
+
+  /* ============ 3D CUBE ALBUM ============ */
+  .act-wrap{
+    position:relative;perspective:1700px;
+    width:100%;height:clamp(540px,78vh,680px);
+    display:grid;place-items:center;
+  }
+  .act-box{
+    position:relative;width:260px;height:260px;
+    transform-style:preserve-3d;transform:rotateX(13deg);
+    animation:actSpin 26s linear infinite;cursor:pointer;
+  }
+  .act-box:hover{animation-play-state:paused}
+  @keyframes actSpin{
+    from{transform:rotateX(13deg) rotateY(0deg)}
+    to{transform:rotateX(13deg) rotateY(360deg)}
+  }
+  .act-min,.act-max{position:absolute;inset:0;margin:auto;transform-style:preserve-3d}
+  .act-face{
+    position:absolute;inset:0;margin:auto;
+    background-size:cover;background-position:center;background-repeat:no-repeat;
+    backface-visibility:hidden;
+    transition:transform .6s var(--ease-spring),width .6s var(--ease-spring),height .6s var(--ease-spring),opacity .5s,border-color .3s,box-shadow .5s;
+  }
+  .act-min{width:150px;height:150px}
+  .act-min .act-face{
+    width:150px;height:150px;
+    border:1px solid var(--line-strong);border-radius:10px;
+    box-shadow:0 10px 30px rgba(0,0,0,.55);
+  }
+  .act-min .act-face:nth-child(1){background-image:url(awards/award-01.png);transform:translateZ(75px)}
+  .act-min .act-face:nth-child(2){background-image:url(awards/award-02.png);transform:rotateX(180deg) translateZ(75px)}
+  .act-min .act-face:nth-child(3){background-image:url(awards/award-03.png);transform:rotateX(-90deg) translateZ(75px)}
+  .act-min .act-face:nth-child(4){background-image:url(awards/award-04.png);transform:rotateX(90deg) translateZ(75px)}
+  .act-min .act-face:nth-child(5){background-image:url(awards/award-05.png);transform:rotateY(-90deg) translateZ(75px)}
+  .act-min .act-face:nth-child(6){background-image:url(awards/award-06.png);transform:rotateY(90deg) translateZ(75px)}
+  .act-max{width:260px;height:260px}
+  .act-max .act-face{
+    width:260px;height:260px;border-radius:12px;
+    border:1px solid var(--line);opacity:.45;
+  }
+  .act-max .act-face:nth-child(1){background-image:url(awards/award-07.png);transform:translateZ(130px)}
+  .act-max .act-face:nth-child(2){background-image:url(awards/award-08.png);transform:rotateX(180deg) translateZ(130px)}
+  .act-max .act-face:nth-child(3){background-image:url(awards/award-09.png);transform:rotateX(-90deg) translateZ(130px)}
+  .act-max .act-face:nth-child(4){background-image:url(awards/award-10.png);transform:rotateX(90deg) translateZ(130px)}
+  .act-max .act-face:nth-child(5){background-image:url(awards/award-01.png);transform:rotateY(-90deg) translateZ(130px)}
+  .act-max .act-face:nth-child(6){background-image:url(awards/award-02.png);transform:rotateY(90deg) translateZ(130px)}
+  .act-box:hover .act-max .act-face{
+    opacity:.96;border-color:var(--cyan);
+    box-shadow:0 0 34px rgba(34,224,255,.35),0 24px 50px rgba(0,0,0,.6);
+  }
+  .act-box:hover .act-max .act-face:nth-child(1){transform:translateZ(340px);width:340px;height:340px}
+  .act-box:hover .act-max .act-face:nth-child(2){transform:rotateX(180deg) translateZ(340px);width:340px;height:340px}
+  .act-box:hover .act-max .act-face:nth-child(3){transform:rotateX(-90deg) translateZ(340px);width:340px;height:340px}
+  .act-box:hover .act-max .act-face:nth-child(4){transform:rotateX(90deg) translateZ(340px);width:340px;height:340px}
+  .act-box:hover .act-max .act-face:nth-child(5){transform:rotateY(-90deg) translateZ(340px);width:340px;height:340px}
+  .act-box:hover .act-max .act-face:nth-child(6){transform:rotateY(90deg) translateZ(340px);width:340px;height:340px}
+  .act-hint{
+    margin-top:26px;
+    font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--muted);
+  }
+  .act-foot{
+    display:flex;gap:16px;margin-top:clamp(26px,4vh,40px);
+    flex-wrap:wrap;justify-content:center;
+  }
+  @media (max-width:640px){
+    .act-box{width:170px;height:170px}
+    .act-min{width:100px;height:100px}
+    .act-min .act-face{width:100px;height:100px}
+    .act-min .act-face:nth-child(1){transform:translateZ(50px)}
+    .act-min .act-face:nth-child(2){transform:rotateX(180deg) translateZ(50px)}
+    .act-min .act-face:nth-child(3){transform:rotateX(-90deg) translateZ(50px)}
+    .act-min .act-face:nth-child(4){transform:rotateX(90deg) translateZ(50px)}
+    .act-min .act-face:nth-child(5){transform:rotateY(-90deg) translateZ(50px)}
+    .act-min .act-face:nth-child(6){transform:rotateY(90deg) translateZ(50px)}
+    .act-max{width:170px;height:170px}
+    .act-max .act-face{width:170px;height:170px}
+    .act-max .act-face:nth-child(1){transform:translateZ(85px)}
+    .act-max .act-face:nth-child(2){transform:rotateX(180deg) translateZ(85px)}
+    .act-max .act-face:nth-child(3){transform:rotateX(-90deg) translateZ(85px)}
+    .act-max .act-face:nth-child(4){transform:rotateX(90deg) translateZ(85px)}
+    .act-max .act-face:nth-child(5){transform:rotateY(-90deg) translateZ(85px)}
+    .act-max .act-face:nth-child(6){transform:rotateY(90deg) translateZ(85px)}
+    .act-box:hover .act-max .act-face:nth-child(1){transform:translateZ(210px);width:210px;height:210px}
+    .act-box:hover .act-max .act-face:nth-child(2){transform:rotateX(180deg) translateZ(210px);width:210px;height:210px}
+    .act-box:hover .act-max .act-face:nth-child(3){transform:rotateX(-90deg) translateZ(210px);width:210px;height:210px}
+    .act-box:hover .act-max .act-face:nth-child(4){transform:rotateX(90deg) translateZ(210px);width:210px;height:210px}
+    .act-box:hover .act-max .act-face:nth-child(5){transform:rotateY(-90deg) translateZ(210px);width:210px;height:210px}
+    .act-box:hover .act-max .act-face:nth-child(6){transform:rotateY(90deg) translateZ(210px);width:210px;height:210px}
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    position:relative;z-index:10;margin-top:auto;
+    text-align:center;padding:24px var(--pad-x);
+    border-top:1px solid var(--line);
+    color:var(--muted);font-size:12px;letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
+  <div class="scanline"></div>
+
+  <header class="topbar">
+    <a class="logo" href="index.html" id="top"><span class="dot"></span>知行创赛社</a>
+    <a class="btn" href="index.html">← 返回首页</a>
+  </header>
+
+  <main class="stage">
+    <span class="sec-index">[ 社团活动 ]</span>
+    <h1>活动风采 · 精彩瞬间</h1>
+    <div class="line"></div>
+    <div class="sub">ZHI-XING · 3D ALBUM</div>
+
+    <div class="act-wrap">
+      <div class="act-box">
+        <div class="act-min">
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+        </div>
+        <div class="act-max">
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+          <div class="act-face"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act-hint">悬停放大 · 暂停旋转</div>
+    <div class="act-foot">
+      <a class="btn" href="index.html">← 返回首页</a>
+      <a class="btn" href="#top">回到顶部 ↑</a>
+    </div>
+  </main>
+
+  <footer>知行创赛社® · 山东管理学院 · 知行合一 · 以赛促学 · © 2026</footer>
+</body>
+</html>
