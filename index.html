@@ -1096,5 +1096,29 @@
   }
 })();
 </script>
+<script>
+(function () {
+  var boomPlayed = false;
+  function playBoom() {
+    if (boomPlayed) return;
+    try {
+      var a = new Audio('boom.mp3');
+      a.volume = 0.7;
+      var p = a.play();
+      if (p && p.then) {
+        p.then(function () { boomPlayed = true; }).catch(function () {});
+      } else {
+        boomPlayed = true;
+      }
+    } catch (e) {
+      boomPlayed = true;
+    }
+  }
+  window.addEventListener('load', playBoom);
+  document.addEventListener('pointerdown', function onFirstClick() {
+    if (!boomPlayed) playBoom();
+  });
+})();
+</script>
 </body>
 </html>
