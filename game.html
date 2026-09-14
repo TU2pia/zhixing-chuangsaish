@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>知行创赛社 · 小游戏 2048</title>
+<style>
+  :root{
+    --bg:#05070f;--panel:#0b1020;--line:#1c2740;
+    --cyan:#22e0ff;--violet:#8b5cf6;--magenta:#ff4fd8;
+    --text:#e8f1ff;--muted:#8aa0c0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:radial-gradient(1200px 800px at 70% -10%,rgba(139,92,246,.18),transparent 60%),
+               radial-gradient(1000px 700px at 10% 110%,rgba(34,224,255,.12),transparent 60%),var(--bg);
+    color:var(--text);min-height:100vh;font-family:"Segoe UI","Microsoft YaHei",sans-serif;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 16px;
+  }
+  .top{width:100%;max-width:420px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .brand{font-family:Consolas,monospace;letter-spacing:2px;font-size:14px;color:var(--cyan)}
+  .brand b{color:var(--magenta)}
+  .back{color:var(--muted);text-decoration:none;font-size:13px;border:1px solid var(--line);padding:7px 14px;border-radius:8px;transition:.2s}
+  .back:hover{color:var(--cyan);border-color:var(--cyan)}
+  .head{width:100%;max-width:420px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .score-box{text-align:right}
+  .score-box .lbl{font-size:11px;color:var(--muted);letter-spacing:2px}
+  .score-box .val{font-size:24px;font-family:Consolas,monospace;color:var(--cyan);text-shadow:0 0 12px rgba(34,224,255,.5)}
+  .new-game{
+    background:linear-gradient(90deg,var(--cyan),var(--violet));border:none;color:#04101a;font-weight:700;
+    padding:10px 18px;border-radius:10px;cursor:pointer;font-size:14px;transition:.2s;
+  }
+  .new-game:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(34,224,255,.35)}
+  .board{
+    width:100%;max-width:420px;aspect-ratio:1;background:rgba(11,16,32,.85);
+    border:1px solid var(--line);border-radius:14px;padding:10px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+    box-shadow:0 0 40px rgba(34,224,255,.08),inset 0 0 30px rgba(0,0,0,.4);
+  }
+  .cell{
+    background:rgba(255,255,255,.04);border-radius:10px;display:flex;align-items:center;justify-content:center;
+    font-family:Consolas,monospace;font-weight:700;font-size:30px;color:var(--text);
+    transition:background .12s,transform .1s;position:relative;user-select:none;
+  }
+  .cell.hot{transform:scale(1.08)}
+  .t2{background:rgba(34,224,255,.16);color:#bdf1ff}
+  .t4{background:rgba(34,224,255,.28);color:#e2f9ff}
+  .t8{background:rgba(139,92,246,.25);color:#e4d9ff}
+  .t16{background:rgba(139,92,246,.4);color:#f0e9ff}
+  .t32{background:rgba(255,79,216,.3);color:#ffd9f3}
+  .t64{background:rgba(255,79,216,.45);color:#ffe6f7}
+  .t128{background:linear-gradient(135deg,rgba(34,224,255,.5),rgba(139,92,246,.5));color:#fff;font-size:26px}
+  .t256{background:linear-gradient(135deg,rgba(34,224,255,.65),rgba(139,92,246,.65));color:#fff;font-size:26px}
+  .t512{background:linear-gradient(135deg,rgba(139,92,246,.7),rgba(255,79,216,.7));color:#fff;font-size:24px}
+  .t1024{background:linear-gradient(135deg,rgba(255,79,216,.75),rgba(34,224,255,.75));color:#fff;font-size:22px}
+  .t2048{background:linear-gradient(135deg,rgba(255,215,64,.9),rgba(255,120,64,.9));color:#1a1204;font-size:22px}
+  .tip{color:var(--muted);font-size:12px;margin-top:16px;letter-spacing:1px;text-align:center}
+  .tip kbd{background:var(--panel);border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-family:Consolas,monospace;color:var(--cyan)}
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(5,7,15,.75);backdrop-filter:blur(6px);z-index:10}
+  .overlay.show{display:flex}
+  .overlay .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:34px 44px;text-align:center}
+  .overlay h2{font-size:30px;letter-spacing:3px;margin-bottom:10px}
+  .overlay p{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .overlay .btn{background:linear-gradient(90deg,var(--cyan),var(--violet));border:none;color:#04101a;font-weight:700;padding:12px 28px;border-radius:10px;cursor:pointer;font-size:15px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">知行创赛社 <b>·</b> 2048</div>
+    <a class="back" href="index.html">← 返回首页</a>
+  </div>
+  <div class="head">
+    <div></div>
+    <div class="score-box"><div class="lbl">SCORE</div><div class="val" id="score">0</div></div>
+  </div>
+  <div class="board" id="board"></div>
+  <div class="tip">键盘 <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> 移动 · 触屏滑动 · 相同数字合并翻倍</div>
+
+  <div class="overlay" id="overlay">
+    <div class="card">
+      <h2 id="ovTitle">GAME OVER</h2>
+      <p id="ovMsg"></p>
+      <button class="btn" onclick="newGame()">再来一局</button>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var size=4, grid=[], score=0, moved=false;
+  var board=document.getElementById('board'), scoreEl=document.getElementById('score');
+  var overlay=document.getElementById('overlay'), ovTitle=document.getElementById('ovTitle'), ovMsg=document.getElementById('ovMsg');
+
+  function init(){
+    board.innerHTML='';
+    grid=Array.from({length:size},function(){return new Array(size).fill(0)});
+    for(var i=0;i<size;i++){
+      var row=document.createElement('div');
+      for(var j=0;j<size;j++){
+        var c=document.createElement('div');c.className='cell';c.id='c'+i+'_'+j;row.appendChild(c);
+      }
+      row.style.cssText='display:contents';
+      board.appendChild(row);
+    }
+    score=0;scoreEl.textContent='0';
+    addRandom();addRandom();
+    render();
+    overlay.classList.remove('show');
+  }
+  function addRandom(){
+    var empty=[];
+    for(var i=0;i<size;i++)for(var j=0;j<size;j++)if(!grid[i][j])empty.push([i,j]);
+    if(!empty.length)return false;
+    var p=empty[Math.floor(Math.random()*empty.length)];
+    grid[p[0]][p[1]]=Math.random()<0.9?2:4;
+    return true;
+  }
+  function slideRow(row){
+    var arr=row.filter(function(v){return v});
+    var out=[],i=0;
+    while(i<arr.length){
+      if(i+1<arr.length&&arr[i]===arr[i+1]){out.push(arr[i]*2);score+=arr[i]*2;i+=2;}
+      else{out.push(arr[i]);i++;}
+    }
+    while(out.length<size)out.push(0);
+    return out;
+  }
+  function move(dir){
+    moved=false;score=0;
+    var rotated=false;
+    if(dir==='up'){grid=rotate(grid);rotated=true;}
+    else if(dir==='down'){grid=rotate(grid);grid=rotate(grid);grid=rotate(grid);}
+    for(var i=0;i<size;i++){var r=slideRow(grid[i]);if(r.join(',')!==grid[i].join(','))moved=true;grid[i]=r;}
+    if(dir==='up'){grid=rotate(grid);grid=rotate(grid);grid=rotate(grid);}
+    else if(dir==='down'){grid=rotate(grid);}
+    scoreEl.textContent=parseInt(scoreEl.textContent,10)+score;
+    if(moved){addRandom();render();checkEnd();}
+  }
+  function rotate(m){
+    var n=m.length,r=Array.from({length:n},function(){return new Array(n).fill(0)});
+    for(var i=0;i<n;i++)for(var j=0;j<n;j++)r[j][n-1-i]=m[i][j];
+    return r;
+  }
+  function render(){
+    for(var i=0;i<size;i++)for(var j=0;j<size;j++){
+      var c=document.getElementById('c'+i+'_'+j),v=grid[i][j];
+      c.className='cell';
+      if(v){c.classList.add('t'+v);c.textContent=v;}else c.textContent='';
+    }
+  }
+  function canMove(){
+    for(var i=0;i<size;i++)for(var j=0;j<size;j++){
+      if(!grid[i][j])return true;
+      if(j<size-1&&grid[i][j]===grid[i][j+1])return true;
+      if(i<size-1&&grid[i][j]===grid[i+1][j])return true;
+    }
+    return false;
+  }
+  function checkEnd(){
+    var maxV=0;
+    for(var i=0;i<size;i++)for(var j=0;j<size;j++)maxV=Math.max(maxV,grid[i][j]);
+    if(maxV>=2048){ovTitle.textContent='YOU WIN!';ovMsg.textContent='达到 2048，成就达成！可以继续挑战更高分。';overlay.classList.add('show');}
+    else if(!canMove()){ovTitle.textContent='GAME OVER';ovMsg.textContent='没有可移动的格子了。';overlay.classList.add('show');}
+  }
+  document.addEventListener('keydown',function(e){
+    var k=e.key;
+    if(k==='ArrowUp'||k==='w'||k==='W'){e.preventDefault();move('up');}
+    else if(k==='ArrowDown'||k==='s'||k==='S'){e.preventDefault();move('down');}
+    else if(k==='ArrowLeft'||k==='a'||k==='A'){e.preventDefault();move('left');}
+    else if(k==='ArrowRight'||k==='d'||k==='D'){e.preventDefault();move('right');}
+  });
+  var tx=0,ty=0;
+  board.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+  board.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)<24&&Math.abs(dy)<24)return;
+    if(Math.abs(dx)>Math.abs(dy))move(dx>0?'right':'left');else move(dy>0?'down':'up');
+  },{passive:true});
+  window.newGame=init;
+  init();
+})();
+</script>
+</body>
+</html>
