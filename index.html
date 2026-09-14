@@ -76,10 +76,44 @@
     box-shadow:0 0 10px var(--cyan);
     animation:pulse 1.6s ease-in-out infinite;
   }
-  .bg-music audio{
-    width:100%;height:34px;
-    filter:drop-shadow(0 0 6px rgba(34,224,255,.35));
+  .bg-music audio{display:none}
+  .bg-mute{
+    position:relative;
+    width:66px;height:66px;
+    margin:2px auto 0;
+    border-radius:50%;
+    cursor:pointer;
+    border:1px solid rgba(34,224,255,.5);
+    color:var(--cyan);
+    background:radial-gradient(circle at 35% 30%,rgba(34,224,255,.18),rgba(8,14,32,.9));
+    box-shadow:0 0 20px rgba(34,224,255,.35),inset 0 0 14px rgba(34,224,255,.18);
+    display:grid;place-items:center;
+    font-size:24px;line-height:1;
+    transition:border-color .3s,box-shadow .3s,transform .2s;
   }
+  .bg-mute:hover{
+    border-color:#fff;
+    box-shadow:0 0 28px rgba(34,224,255,.6),inset 0 0 18px rgba(34,224,255,.3);
+    transform:scale(1.06);
+  }
+  .bg-mute:active{transform:scale(.95)}
+  .bg-mute-ico{pointer-events:none;transition:opacity .3s,transform .3s}
+  .bg-mute-note{
+    position:absolute;pointer-events:none;
+    color:var(--cyan);
+    text-shadow:0 0 10px rgba(34,224,255,.8);
+    animation:note-float 2.4s ease-in-out infinite;
+    transition:opacity .4s,transform .4s;
+  }
+  .bg-mute-note.n1{top:-4px;left:2px;font-size:15px;animation-delay:0s}
+  .bg-mute-note.n2{top:10px;right:-2px;font-size:11px;animation-delay:.4s}
+  .bg-mute-note.n3{bottom:2px;left:-6px;font-size:12px;animation-delay:.8s}
+  @keyframes note-float{
+    0%,100%{transform:translateY(0) rotate(0deg)}
+    50%{transform:translateY(-9px) rotate(18deg)}
+  }
+  .bg-mute.muted .bg-mute-note{opacity:0;transform:translateY(6px) scale(.5)}
+  .bg-mute.muted .bg-mute-ico{opacity:.55}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}
 
   /* ============ BACKGROUND LAYERS ============ */
@@ -608,7 +642,13 @@
 
 <div class="bg-music" id="bgMusicWrap">
   <div class="bg-music-label">♪ BGM · BACK IN BLACK</div>
-  <audio id="bgMusic" controls loop src="back-in-black.mp3"></audio>
+  <button class="bg-mute" id="bgMute" type="button" aria-pressed="false" title="静音开关">
+    <span class="bg-mute-note n1">♪</span>
+    <span class="bg-mute-note n2">♫</span>
+    <span class="bg-mute-note n3">♬</span>
+    <span class="bg-mute-ico" id="bgMuteIco">🔊</span>
+  </button>
+  <audio id="bgMusic" loop src="back-in-black.mp3" style="display:none"></audio>
 </div>
 <canvas id="net"></canvas>
 <div class="cursor-dot"></div>
@@ -1217,6 +1257,16 @@
   document.addEventListener('keydown', function onFirstKey() {
     if (!started) startBg();
   });
+  var muteBtn = document.getElementById('bgMute');
+  if (muteBtn) {
+    muteBtn.addEventListener('click', function () {
+      bgMusic.muted = !bgMusic.muted;
+      muteBtn.classList.toggle('muted', bgMusic.muted);
+      muteBtn.setAttribute('aria-pressed', bgMusic.muted ? 'true' : 'false');
+      var ico = document.getElementById('bgMuteIco');
+      if (ico) ico.textContent = bgMusic.muted ? '🔇' : '🔊';
+    });
+  }
 })();
 </script>
 <script>
