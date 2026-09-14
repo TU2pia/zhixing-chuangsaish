@@ -29,7 +29,7 @@
   .grid{max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
   .card{
     position:relative;background:rgba(11,16,32,.8);border:1px solid var(--line);border-radius:16px;
-    padding:26px 20px;text-align:center;cursor:pointer;overflow:hidden;transition:.25s;
+    padding:26px 20px;text-align:center;cursor:pointer;overflow:hidden;transition:.25s;display:block;text-decoration:none;color:var(--text);
   }
   .card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(34,224,255,.12),rgba(139,92,246,.12));opacity:0;transition:.25s}
   .card:hover{transform:translateY(-6px);border-color:var(--cyan);box-shadow:0 14px 34px rgba(34,224,255,.15)}
@@ -42,6 +42,8 @@
     border:1px solid var(--line);padding:2px 8px;border-radius:12px;font-family:Consolas,monospace;
   }
   .card .status.soon{color:#ffd940;border-color:rgba(255,217,64,.4);background:rgba(255,217,64,.06)}
+  .card .status.play{color:#3dffa0;border-color:rgba(61,255,160,.4);background:rgba(61,255,160,.06)}
+  .card.playable::after{content:"▶";position:absolute;right:14px;bottom:12px;color:var(--cyan);font-size:12px;opacity:.6}
   .toast{
     position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);
     background:var(--panel);border:1px solid var(--cyan);color:var(--text);font-size:13px;
@@ -65,41 +67,41 @@
   </div>
 
   <div class="grid" id="grid">
+    <a class="card playable" href="snake.html">
+      <span class="status play">可玩</span>
+      <div class="ico">🐍</div>
+      <h3>贪吃蛇</h3>
+      <p>经典蛇形走位，越吃越长</p>
+    </a>
+    <a class="card playable" href="plane.html">
+      <span class="status play">可玩</span>
+      <div class="ico">✈️</div>
+      <h3>飞机大战</h3>
+      <p>战机出击，横扫敌群</p>
+    </a>
+    <a class="card playable" href="sokoban.html">
+      <span class="status play">可玩</span>
+      <div class="ico">📦</div>
+      <h3>推箱子</h3>
+      <p>开动脑筋，把箱子归位</p>
+    </a>
+    <a class="card playable" href="street-fighter/index.html">
+      <span class="status play">可玩</span>
+      <div class="ico">🥊</div>
+      <h3>街头霸王</h3>
+      <p>经典格斗，一决高下</p>
+    </a>
+    <a class="card playable" href="mystery.html">
+      <span class="status play">可玩</span>
+      <div class="ico">🎭</div>
+      <h3>神秘挑战</h3>
+      <p>不知道玩什么，但很好玩</p>
+    </a>
     <div class="card" data-name="2048">
       <span class="status soon">即将上线</span>
       <div class="ico">🧩</div>
       <h3>2048</h3>
       <p>合并数字，冲击 2048 高分</p>
-    </div>
-    <div class="card" data-name="贪吃蛇">
-      <span class="status soon">即将上线</span>
-      <div class="ico">🐍</div>
-      <h3>贪吃蛇</h3>
-      <p>经典蛇形走位，越吃越长</p>
-    </div>
-    <div class="card" data-name="打地鼠">
-      <span class="status soon">即将上线</span>
-      <div class="ico">🔨</div>
-      <h3>打地鼠</h3>
-      <p>眼疾手快，精准敲击</p>
-    </div>
-    <div class="card" data-name="猜数字">
-      <span class="status soon">即将上线</span>
-      <div class="ico">🎯</div>
-      <h3>猜数字</h3>
-      <p>逻辑推理，锁定神秘数字</p>
-    </div>
-    <div class="card" data-name="俄罗斯方块">
-      <span class="status soon">即将上线</span>
-      <div class="ico">🟦</div>
-      <h3>俄罗斯方块</h3>
-      <p>堆叠消除，挑战无尽方块</p>
-    </div>
-    <div class="card" data-name="记忆翻牌">
-      <span class="status soon">即将上线</span>
-      <div class="ico">🃏</div>
-      <h3>记忆翻牌</h3>
-      <p>配对翻牌，考验记忆力</p>
     </div>
     <div class="card" data-name="扫雷">
       <span class="status soon">即将上线</span>
@@ -124,7 +126,7 @@
   var toast=document.getElementById('toast'),timer=null;
   document.getElementById('grid').addEventListener('click',function(e){
     var card=e.target.closest('.card');
-    if(!card)return;
+    if(!card||card.classList.contains('playable'))return;
     toast.textContent='「'+card.dataset.name+'」敬请期待，即将上线';
     toast.classList.add('show');
     clearTimeout(timer);
