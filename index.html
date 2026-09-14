@@ -560,6 +560,7 @@
 </head>
 <body>
 
+<audio id="bgMusic" controls loop src="back-in-black.mp3" style="position:absolute;top:86px;right:18px;z-index:50;width:280px;opacity:.92"></audio>
 <canvas id="net"></canvas>
 <div class="cursor-dot"></div>
 <div class="cursor-ring"></div>
@@ -1145,16 +1146,13 @@
 </script>
 <script>
 (function () {
-  var bgMusic = null;
+  var bgMusic = document.getElementById('bgMusic');
+  if (!bgMusic) return;
+  bgMusic.volume = 0.5;
   var started = false;
   function startBg() {
     if (started) return;
     try {
-      if (!bgMusic) {
-        bgMusic = new Audio('back-in-black.mp3');
-        bgMusic.loop = true;
-        bgMusic.volume = 0.5;
-      }
       var p = bgMusic.play();
       if (p && p.then) {
         p.then(function () { started = true; }).catch(function () {});
