@@ -513,7 +513,8 @@
   .award-modal.show{display:flex;animation:fadeIn .3s ease}
   .award-modal .g-box{
     position:relative;width:100%;max-width:min(96vw,1320px);
-    max-height:92vh;overflow-y:auto;overflow-x:hidden;
+    height:min(88vh,720px);
+    overflow-y:auto;overflow-x:hidden;
     background:linear-gradient(180deg,var(--bg-2),var(--bg));
     border:1px solid var(--line-strong);border-radius:18px;
     padding:26px;animation:pop .4s var(--ease-spring);
@@ -536,7 +537,7 @@
     display:grid;place-items:center;
   }
   .award-modal .award3d-ring{
-    --r:400px;--cw:255px;--ch:335px;
+    --r:480px;--cw:168px;--ch:228px;
     position:relative;width:var(--cw);height:var(--ch);
     transform-style:preserve-3d;
     animation:ringSpin 28s linear infinite;
@@ -551,7 +552,7 @@
     transition:transform .4s var(--ease-spring),border-color .3s,box-shadow .3s;
   }
   .award-modal .award3d-card:hover{
-    transform:rotateY(var(--a)) translateZ(calc(var(--r) + 130px)) scale(1.28);
+    transform:rotateY(var(--a)) translateZ(calc(var(--r) + 110px)) scale(1.18);
     border-color:var(--cyan);
     box-shadow:0 0 36px rgba(34,224,255,.35),0 18px 40px rgba(0,0,0,.6);
   }
@@ -561,8 +562,8 @@
   }
   @keyframes ringSpin{from{transform:rotateX(-10deg) rotateY(0deg)}to{transform:rotateX(-10deg) rotateY(360deg)}}
   @media (max-width:640px){
-    .award-modal .award3d-ring{--r:190px;--cw:112px;--ch:150px}
-    .award-modal .award3d-stage{min-height:280px}
+    .award-modal .award3d-ring{--r:215px;--cw:86px;--ch:118px}
+    .award-modal .award3d-stage{min-height:330px}
   }
   .award-modal .g-close{
     width:34px;height:34px;border-radius:8px;cursor:pointer;flex:none;
@@ -840,21 +841,25 @@
       <button class="g-close" id="awardClose" aria-label="关闭">✕</button>
     </div>
     <div class="award3d">
+      <div class="award3d-hint">悬停放大 · 点击查看大图</div>
       <div class="award3d-stage">
         <div class="award3d-ring">
           <div class="award3d-card" data-src="awards/award-01.png" style="--a:0deg"><img src="awards/award-01.png" alt="获奖证书1" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-02.png" style="--a:36deg"><img src="awards/award-02.png" alt="获奖证书2" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-03.png" style="--a:72deg"><img src="awards/award-03.png" alt="获奖证书3" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-04.png" style="--a:108deg"><img src="awards/award-04.png" alt="获奖证书4" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-05.png" style="--a:144deg"><img src="awards/award-05.png" alt="获奖证书5" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-06.png" style="--a:180deg"><img src="awards/award-06.png" alt="获奖证书6" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-07.png" style="--a:216deg"><img src="awards/award-07.png" alt="获奖证书7" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-08.png" style="--a:252deg"><img src="awards/award-08.png" alt="获奖证书8" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-09.png" style="--a:288deg"><img src="awards/award-09.png" alt="获奖证书9" loading="lazy"></div>
-          <div class="award3d-card" data-src="awards/award-10.png" style="--a:324deg"><img src="awards/award-10.png" alt="获奖证书10" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-02.png" style="--a:25.71deg"><img src="awards/award-02.png" alt="获奖证书2" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-03.png" style="--a:51.43deg"><img src="awards/award-03.png" alt="获奖证书3" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-04.png" style="--a:77.14deg"><img src="awards/award-04.png" alt="获奖证书4" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-05.png" style="--a:102.86deg"><img src="awards/award-05.png" alt="获奖证书5" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-06.png" style="--a:128.57deg"><img src="awards/award-06.png" alt="获奖证书6" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-07.png" style="--a:154.29deg"><img src="awards/award-07.png" alt="获奖证书7" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-08.png" style="--a:180deg"><img src="awards/award-08.png" alt="获奖证书8" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-09.png" style="--a:205.71deg"><img src="awards/award-09.png" alt="获奖证书9" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-10.png" style="--a:231.43deg"><img src="awards/award-10.png" alt="获奖证书10" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-11.png" style="--a:257.14deg"><img src="awards/award-11.png" alt="获奖证书11" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-12.png" style="--a:282.86deg"><img src="awards/award-12.png" alt="获奖证书12" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-13.png" style="--a:308.57deg"><img src="awards/award-13.png" alt="获奖证书13" loading="lazy"></div>
+          <div class="award3d-card" data-src="awards/award-14.png" style="--a:334.29deg"><img src="awards/award-14.png" alt="获奖证书14" loading="lazy"></div>
         </div>
       </div>
-      <div class="award3d-hint">悬停放大 · 点击查看大图</div>
     </div>
   </div>
 </div>
